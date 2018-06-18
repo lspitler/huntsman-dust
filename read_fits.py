@@ -5,6 +5,7 @@ import glob
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from astropy.io import fits
+from astropy.wcs import WCS
 
 
 # Finds FITs files and created image_path
@@ -21,16 +22,24 @@ hdulist = fits.open(image_path)
 
 # Extract image and header
 image = hdulist[0].data
-header = hdulist[0].data
+header = hdulist[0].header
 
-# print(hdu.data.shape)
-# print(hdu.header)
+# reads header and creates World Coordinate System (WCS) object
+w = WCS(header)
 
-plt.figure(1)
+# Figure 1 - Linear
+fig_1 = plt.figure(1)
+fig_1.add_subplot(111, projection=w)
 plt.imshow(image, origin='lower', cmap='gray')
+plt.xlabel('RA')
+plt.ylabel('Dec')
 plt.colorbar()
 
-plt.figure(2)
+# Figure 2 - Logarithmic
+fig_2 = plt.figure(2)
+fig_2.add_subplot(111, projection=w)
 plt.imshow(image, origin='lower', cmap='gray', norm=LogNorm())
+plt.xlabel('RA')
+plt.ylabel('Dec')
 plt.colorbar()
 plt.show()
