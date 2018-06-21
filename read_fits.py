@@ -1,35 +1,22 @@
 """Import and display FITs image"""
 
 import os
-import glob
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-from astropy.io import fits
-from astropy.wcs import WCS
+
+from im_path import im_path
+from image_load import image_load
 
 
-# Finds FITs files and created image_path
-cwd = os.getcwd()
-data_dir = '/Users/amanchokshi/Desktop/Huntsman/Data'
-os.chdir(data_dir)
-for file in glob.glob("*.fits"):
-    print(file)
-os.chdir(cwd)
-image_path = os.path.join(data_dir, file)
+source_dir = '/Users/amanchokshi/Desktop/Huntsman/huntsman_dust'
+os.chdir(source_dir)
+image_path = im_path('/Users/amanchokshi/Desktop/Huntsman/Data')
+image, header, wcs = image_load(image_path)
 
-# Read in FITs file
-hdulist = fits.open(image_path)
-
-# Extract image and header
-image = hdulist[0].data
-header = hdulist[0].header
-
-# reads header and creates World Coordinate System (WCS) object
-w = WCS(header)
 
 # Figure 1 - Linear
 fig_1 = plt.figure(1)
-fig_1.add_subplot(111, projection=w)
+fig_1.add_subplot(111, projection=wcs)
 plt.imshow(image, origin='lower', cmap='gray')
 plt.xlabel('RA')
 plt.ylabel('Dec')
@@ -37,7 +24,7 @@ plt.colorbar()
 
 # Figure 2 - Logarithmic
 fig_2 = plt.figure(2)
-fig_2.add_subplot(111, projection=w)
+fig_2.add_subplot(111, projection=wcs)
 plt.imshow(image, origin='lower', cmap='gray', norm=LogNorm())
 plt.xlabel('RA')
 plt.ylabel('Dec')
