@@ -13,7 +13,7 @@ def main():
     from plt_fits import plt_fits
 
     # Finds fits file, reads it to import image data, header, WCS
-    source_dir = '/Users/amanchokshi/Desktop/Huntsman/Scripts'
+    source_dir = '/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust'
     os.chdir(source_dir)
     image_path, file = im_path('/Users/amanchokshi/Desktop/Huntsman/Data')
     image, header, wcs = image_load(image_path)
