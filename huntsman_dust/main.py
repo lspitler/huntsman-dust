@@ -1,7 +1,8 @@
 """Detecting and masking sources"""
 
 
-def main():
+def main(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
+         data_dir='/Users/amanchokshi/Desktop/Huntsman/Data'):
     import os
     from matplotlib.colors import LogNorm
 
@@ -13,9 +14,9 @@ def main():
     from plt_fits import plt_fits
 
     # Finds fits file, reads it to import image data, header, WCS
-    source_dir = '/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust'
+    source_dir = script_dir
     os.chdir(source_dir)
-    image_path, file = im_path('/Users/amanchokshi/Desktop/Huntsman/Data')
+    image_path, file = im_path(data_dir)
     image, header, wcs = image_load(image_path)
 
     # Selects sub region of image
