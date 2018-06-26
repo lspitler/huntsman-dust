@@ -34,7 +34,10 @@ def main(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
     # finds objects using image segmentation
     segm = find_objects(image, threshold, FWHM=2.0, npixels=6)
 
-    # mask a galaxy located at a given Ra, Dec, with a radius given in arcmins
+    # mask a galaxy located at a given Ra, Dec, with a radius given in arcmins.
+    # Name argument is sufficient as long as there is internet connectivity and
+    # the object is in SESAME. If either condition is not satisfied, optional arguments,
+    # Ra, Dec of center of galaxy must be supplied.
     masked_img, mask = mask_galaxy(image, wcs, name='NGC6822', radius=10)
 
     # dispays Log stretched image & segmented image
