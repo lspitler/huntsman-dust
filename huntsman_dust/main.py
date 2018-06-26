@@ -19,7 +19,6 @@ def main(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
     os.chdir(source_dir)
     image_path, file = im_path(data_dir)
     image, header, wcs = image_load(image_path)
-    print(header)
 
     # Selects sub region of image
     image = image[1600:2300, 2000:3000]
