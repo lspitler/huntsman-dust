@@ -10,7 +10,7 @@ import numpy as np
 from astropy import units as u
 
 
-def mask_galaxy(image, wcs, name=None, radius=None):
+def mask_galaxy(image, wcs, name=None, Ra=None, Dec=None, radius=None):
     # radius must be given in arcminutes
     # Dimentions of the image
     dim = (image.shape)
@@ -20,6 +20,9 @@ def mask_galaxy(image, wcs, name=None, radius=None):
     # This requires an active internet connection
     # a, b are the coordinates of the center given in pixels
     center = SkyCoord.from_name(name)
+    if name is None:
+        center = SkyCoord(Ra, Dec)
+
     c_pix = skycoord_to_pixel(center, wcs)
     a, b = c_pix[0], c_pix[1]
     print(center)
