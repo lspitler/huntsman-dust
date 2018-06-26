@@ -12,12 +12,14 @@ def main(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
     from background_2D import background_2D
     from find_objects import find_objects
     from plt_fits import plt_fits
+    from mask_galaxy import mask_galaxy
 
     # Finds fits file, reads it to import image data, header, WCS
     source_dir = script_dir
     os.chdir(source_dir)
     image_path, file = im_path(data_dir)
     image, header, wcs = image_load(image_path)
+    print(header)
 
     # Selects sub region of image
     image = image[1600:2300, 2000:3000]
@@ -33,10 +35,15 @@ def main(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
     # finds objects using image segmentation
     segm = find_objects(image, threshold, FWHM=2.0, npixels=6)
 
+    # mask a galaxy located at a given Ra, Dec, with a radius given in arcmins
+    masked_img, mask = mask_galaxy(image, wcs, name='NGC6822', radius=10)
+
     # dispays Log stretched image & segmented image
     plt_fits(image, wcs, figure=1, title="Logarithmic scaled FITs image",
              cmap='Greys_r', norm=LogNorm())
-    plt_fits(segm, wcs, figure=2, title="Sources detected in the image",
+    plt_fits(masked_img, wcs, figure=2, title="Masked Galaxy",
+             cmap='Greys_r', norm=LogNorm())
+    plt_fits(segm, wcs, figure=3, title="Sources detected in the image",
              cmap=segm.cmap(random_state=12345), norm=None)
 
 
