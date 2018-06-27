@@ -129,7 +129,7 @@ def mask_galaxy(image, wcs, name=None, Ra=None, Dec=None, radius=None):
         Returns:
             masked_img(array):    Image which has been masked
             mask(boolean array):    Mask of the given object"""
-    # radius must be given in arcminutes
+    # Radius must be given in arcminutes
     # Dimentions of the image
     dim = (image.shape)
     y, x = dim[0], dim[1]
@@ -156,7 +156,7 @@ def mask_galaxy(image, wcs, name=None, Ra=None, Dec=None, radius=None):
 
     rad_pix = (radius/pix_scale).value
 
-    # indexes each pixel and checks if its is >= radius from center
+    # Indexes each pixel and checks if its is >= radius from center
     Y, X = np.ogrid[:y, :x]
     dist_from_center = np.sqrt((X - a)**2 + (Y - b)**2)
     mask = dist_from_center <= rad_pix
