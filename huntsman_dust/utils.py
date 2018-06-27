@@ -54,7 +54,8 @@ def image_load(image_path):
     return image, header, wcs
 
 
-def background_2D(image, sigma=3., iters=10, box_size=20, filter_size=10, plt_grid=False):
+def background_2D(image, sigma=None, iters=None, box_size=None, filter_size=None,
+                  plt_grid=None):
     """2D background estimation.
 
     This function creates a 2D background estimate by dividing the image into a grid,
@@ -87,7 +88,7 @@ def background_2D(image, sigma=3., iters=10, box_size=20, filter_size=10, plt_gr
     return bkg, bkgrms
 
 
-def find_objects(image, threshold, FWHM=2.0, npixels=6):
+def find_objects(image, threshold, FWHM=None, npixels=None):
     """Find sources in image by a segmentation process.
 
     This function detects sources a given sigma above a threshold,
