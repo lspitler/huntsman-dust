@@ -1,55 +1,97 @@
-"""Detecting and masking sources"""
+import os
+import utils
+import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 
 
-def main(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
-         data_dir='/Users/amanchokshi/Desktop/Huntsman/Data'):
-    import os
-    from matplotlib.colors import LogNorm
+def main(script_dir=None,
+         data_dir=None,
+         slice_in=None, slice_out=None,
+         sigma=None, iters=None, box_size=None,
+         filter_size=None, plt_grid=None,
+         FWHM=None, npixels=None,
+         obj_name=None,
+         Ra=None, Dec=None, obj_radius=None):
+    """Detecting and masking sources.
 
-    # imports huntsman_dust functions
-    from im_path import im_path
-    from image_load import image_load
-    from background_2D import background_2D
-    from find_objects import find_objects
-    from plt_fits import plt_fits
-    from mask_galaxy import mask_galaxy
+    This program detects and masks sources on two levels.
+        (1.) A 2D background is determined by creating a grid of desired dimensions,
+             sigma clipping sources within each box and iteratively determining
+             background levels. By interpolating between these grids, a 2D background
+             array is created. Discrete sources are identified based on two criteria:
+                (i)  Sources must be a fixed sigma above the background. By convetions,
+                     a source is identified if it is 3.0 sigma above the threshold,
+                     but any other value of sigma is also acceptable.
+                (ii) A source must have a minimum number of interconnected pixels above
+                     the threshold described in section (i) for it to be considered a
+                     source.
+        (2.) If there is a galaxy or large source present in the image, this is
+             seperately masked. The center of the galaxy is either determined using
+             SESAME, for which an internet connection is required, or by supplying
+             the Ra, Dec coordinates of the center. The radius to be masked is supplied
+             in arcmins. A circular mask is created.
+
+                 Agrs:
+                     script_dir(str, required):  Directory where scripts are saved
+                     data_dir(srt, required):    Directory with fits Data
+                     slice_in(int, optional):    Start value to slice image. Runs faster
+                     slice_out(int, optional):   End value to slice image. Runs faster
+                     sigma(float, required):     Sigma threshold
+                     iters(int, required):       Iteration to be used to find background
+                     box_size(int, required):    Grid size in 2D background estimation
+                     filter_size(int, required): Filter size in pixels
+                     plt_grid(boolean, required):If true show grid used for 2D background
+                     FWHM(float, required):      Full Width Half Maximum
+                     npixels(int, required):     Number of pixels to classify a source
+                     obj_name(str, required):    Galaxy name. Ex: 'NGC6822'
+                     Ra(str, optional):          Ra of galaxy
+                     Dec(str, optional):         Dec of galaxy
+                     obj_radius(float, required):Radius of galaxy in arcmins
+    """
 
     # Finds fits file, reads it to import image data, header, WCS
-    source_dir = script_dir
-    os.chdir(source_dir)
-    image_path, file = im_path(data_dir)
-    image, header, wcs = image_load(image_path)
+    script_dir = script_dir
+    os.chdir(script_dir)
+    image_path, file = utils.im_path(data_dir)
+    image, header, wcs = utils.image_load(image_path)
 
-    # Selects sub region of image
-    image = image[1600:2300, 2000:3000]
-    wcs = wcs[1600:2300, 2000:3000]
+    # Slices image and corresponding WCS object
+    image = image[slice_in:slice_out, slice_in:slice_out]
+    wcs = wcs[slice_in:slice_out, slice_in:slice_out]
 
     # 2D background estimation
-    bkg, bkgrms = background_2D(image, sigma=3., iters=10, box_size=20,
-                                filter_size=5, plt_grid=False)
+    bkg, bkgrms = utils.background_2D(image, sigma=sigma, iters=iters, box_size=box_size,
+                                      filter_size=filter_size, plt_grid=plt_grid)
 
-    # detects a threshold of 3 sigma above background
-    threshold = bkg.background + (3.0 * bkgrms)
+    # Detects a threshold of sigma above background
+    threshold = bkg.background + (sigma * bkgrms)
 
-    # finds objects using image segmentation
-    segm = find_objects(image, threshold, FWHM=2.0, npixels=6)
+    # Finds objects using image segmentation
+    segm = utils.find_objects(image, threshold, FWHM=FWHM, npixels=npixels)
 
-    # mask a galaxy located at a given Ra, Dec, with a radius given in arcmins.
-    # Name argument is sufficient as long as there is internet connectivity and
-    # the object is in SESAME. If either condition is not satisfied, optional arguments,
-    # Ra, Dec of center of galaxy must be supplied.
-    masked_img, mask = mask_galaxy(image, wcs, name='NGC6822', radius=10)
+    # Mask galaxy at given Ra, Dec, within raduis in arcmins
+    masked_img, mask = utils.mask_galaxy(image, wcs, name=obj_name,
+                                         Ra=Ra, Dec=Dec, radius=obj_radius)
 
-    # dispays Log stretched image & segmented image
-    plt_fits(image, wcs, figure=1, title="Logarithmic scaled FITs image",
-             cmap='Greys_r', norm=LogNorm())
-    plt_fits(masked_img, wcs, figure=2, title="Masked Galaxy",
-             cmap='Greys_r', norm=LogNorm())
-    plt_fits(segm, wcs, figure=3, title="Sources detected in the image",
-             cmap=segm.cmap(random_state=12345), norm=None)
+    # Dispays Log stretched image, segmented image, Galaxy masked image
+    utils.plt_fits(image, wcs, figure=1, title="Logarithmic scaled FITs image",
+                   cmap='Greys_r', norm=LogNorm())
+    utils.plt_fits(masked_img, wcs, figure=2, title="Masked Galaxy",
+                   cmap='Greys_r', norm=LogNorm())
+    utils.plt_fits(segm, wcs, figure=3, title="Sources detected in the image",
+                   cmap=segm.cmap(random_state=12345), norm=None)
 
 
+# This is activated iff this module is run, not if it is imported.
 if __name__ == '__main__':
-    main()
-    import matplotlib.pyplot as plt
+
+    main(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
+         data_dir='/Users/amanchokshi/Desktop/Huntsman/Data',
+         slice_in=1000, slice_out=3000,
+         sigma=3.0, iters=10, box_size=20,
+         filter_size=5, plt_grid=False,
+         FWHM=2.0, npixels=6,
+         obj_name='NGC6822',
+         Ra=None, Dec=None, obj_radius=10)
+
     plt.show()
