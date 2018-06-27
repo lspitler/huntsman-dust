@@ -2,7 +2,6 @@
 within a certain radius given is arcminutes"""
 
 from astropy.coordinates import SkyCoord
-from astropy.coordinates import SkyCoord
 from astropy.wcs.utils import skycoord_to_pixel
 from astropy.wcs.utils import proj_plane_pixel_scales
 
