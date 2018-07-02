@@ -14,7 +14,7 @@ from astropy.wcs.utils import proj_plane_pixel_scales
 from astropy import units as u
 from photutils import detect_sources
 from photutils import Background2D, MedianBackground
-from latexify import latexify
+from util_plot import util_plot
 
 
 def im_path(data_dir):
@@ -178,7 +178,7 @@ def plt_fits(image, wcs, figure=None, title=None, cmap=None, norm=None):
             norm:    Image normalizatuion
 
     """
-    latexify()
+    util_plot()
     fig = plt.figure(num=figure)
     ax = fig.add_subplot(1, 1, 1, projection=wcs)
     ax.imshow(image, origin='lower', cmap=cmap, norm=norm)
