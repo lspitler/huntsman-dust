@@ -17,7 +17,7 @@ from photutils import Background2D, MedianBackground
 from util_plot import util_plot
 
 
-def im_path(data_dir):
+def find_fits_files(data_dir):
     """Creates image path in data directory.
 
         Args:

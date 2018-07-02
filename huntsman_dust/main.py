@@ -55,7 +55,7 @@ def main(script_dir=None,
     # Finds fits file, reads it to import image data, header, WCS
     script_dir = script_dir
     os.chdir(script_dir)
-    image_path, file = utils.im_path(data_dir)
+    image_path, file = utils.find_fits_files(data_dir)
     image, header, wcs = utils.image_load(image_path)
 
     # Slices image and corresponding WCS object
