@@ -34,8 +34,9 @@ def main(script_dir=None,
                  Agrs:
                      script_dir(str, required):  Directory where scripts are saved
                      data_dir(srt, required):    Directory with fits Data
-                     slice_in(int, optional):    Start value to slice image. Runs faster
-                     slice_out(int, optional):   End value to slice image. Runs faster
+                     sliceing image: This runs analysis on a small subset of the image
+                                slice_in(int, optional):    Start value to slice image
+                                slice_out(int, optional):   End value to slice image
                      sigma(float, required):     Sigma threshold
                      iters(int, required):       Iteration to be used to find background
                      box_size(int, required):    Grid size in 2D background estimation
