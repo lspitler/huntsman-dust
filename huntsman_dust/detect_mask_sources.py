@@ -47,8 +47,8 @@ def detect_mask_sources(script_dir=None,
                                                  to thresholding. Input is in terms of pixels.
                      npixels(int, required):     Number of pixels to classify a source
                      obj_name(str, required):    Galaxy name. Ex: 'NGC6822'
-                     Ra(str, optional):          Ra of galaxy
-                     Dec(str, optional):         Dec of galaxy
+                     Ra(str, optional):          Ra of galaxy in degrees
+                     Dec(str, optional):         Dec of galaxy in degrees
                      obj_radius(float, required):Radius of galaxy in arcmins
     """
 
@@ -74,7 +74,7 @@ def detect_mask_sources(script_dir=None,
 
     # Mask galaxy at given Ra, Dec, within raduis in arcmins
     masked_img, mask = utils.mask_galaxy(image, wcs, name=obj_name,
-                                         Ra=Ra, Dec=Dec, radius=obj_radius)
+                                         Ra=0., Dec=0., radius=obj_radius)
 
     # Dispays Log stretched image, segmented image, Galaxy masked image
     utils.plt_fits(image, wcs, figure=1, title="Logarithmic scaled FITs image",
@@ -90,11 +90,11 @@ if __name__ == '__main__':
 
     detect_mask_sources(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
                         data_dir='/Users/amanchokshi/Desktop/Huntsman/Data',
-                        slice_in=1000, slice_out=3000,
+                        slice_in=2000, slice_out=2500,
                         sigma=3.0, iters=10, box_size=20,
                         filter_size=5, plt_grid=False,
                         FWHM=2.0, npixels=6,
                         obj_name='NGC6822',
-                        Ra=None, Dec=None, obj_radius=10)
+                        Ra=296.234, Dec=-14.797, obj_radius=10)
 
     plt.show()

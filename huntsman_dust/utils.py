@@ -139,9 +139,12 @@ def mask_galaxy(image, wcs, name=None, Ra=None, Dec=None, radius=None):
     # Finds the center of an object by inputting its name into SESAME
     # This requires an active internet connection
     # a, b are the coordinates of the center given in pixels
-    center = SkyCoord.from_name(name)
-    if name is None:
-        center = SkyCoord(Ra, Dec)
+
+    try:
+        center = SkyCoord.from_name(name)
+    except Exception:
+        print("No active internet connection. Manually enter Ra, Dec.")
+        center = SkyCoord(Ra, Dec, unit="deg")
 
     c_pix = skycoord_to_pixel(center, wcs)
     a, b = c_pix[0], c_pix[1]
