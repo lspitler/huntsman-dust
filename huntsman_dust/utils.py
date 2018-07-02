@@ -118,7 +118,10 @@ def mask_galaxy(image, wcs, name=None, Ra=None, Dec=None, radius=None):
     Creates a circular mask centered at a given Ra, Dec. The radius
     is given in arcmins. The wcs object is used to convert these inputs
     to pixel locations. A pixel scale is also determined. If the object
-    name is suppled, SESAME is used to find object center.
+    name is suppled, SESAME is used to find object center. If no active
+    internet connection is available, center location must be manually
+    entered, in degrees. If no center coordinates are supplied, (0, 0)
+    is the default center.
 
         Args:
             image(array, required):    Image data
