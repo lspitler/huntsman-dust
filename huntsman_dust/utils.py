@@ -17,7 +17,7 @@ from photutils import Background2D, MedianBackground
 from util_plot import util_plot
 
 
-def find_fits_files(data_dir):
+def find_fits_files(data_dir, file_name=None):
     """Creates image path in data directory.
 
         Args:
@@ -29,7 +29,7 @@ def find_fits_files(data_dir):
     """
     cwd = os.getcwd()
     os.chdir(data_dir)
-    for file in glob.glob("*.fits"):
+    for file in glob.glob("*"+file_name+"*"):
         print('File name: ' + file)
     os.chdir(cwd)
     image_path = os.path.join(data_dir, file)
