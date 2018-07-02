@@ -95,10 +95,12 @@ def find_objects(image, threshold, FWHM=None, npixels=None):
     only if it has more that npixels that are interconnected.
 
         Args:
-            image(array, required):    This is the image data
+            image(array, required):        This is the image data
             threshold(array, required):    This is the threshold above which detection occurs
-            FWHM(int, required):    Full Width Half Maximum
-            npixels(int, required):    The minimum number of pixels to define a sources
+            FWHM(int, required):           Full Width Half Maximum of 2D circular gaussian
+                                           kernel used to filter the image prior to
+                                           thresholding. Input is in terms of pixels.
+            npixels(int, required):        The minimum number of pixels to define a sources
 
         Returns:
             Segm:    The segmentation image

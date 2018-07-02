@@ -41,7 +41,9 @@ def main(script_dir=None,
                      box_size(int, required):    Grid size in 2D background estimation
                      filter_size(int, required): Filter size in pixels
                      plt_grid(boolean, required):If true show grid used for 2D background
-                     FWHM(float, required):      Full Width Half Maximum
+                     FWHM(int, required):        Full Width Half Maximum of 2D circular gaussian
+                                                 kernel used to filter the image prior
+                                                 to thresholding. Input is in terms of pixels.
                      npixels(int, required):     Number of pixels to classify a source
                      obj_name(str, required):    Galaxy name. Ex: 'NGC6822'
                      Ra(str, optional):          Ra of galaxy
