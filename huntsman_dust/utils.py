@@ -1,7 +1,4 @@
-import os
-import glob
 import numpy as np
-
 import matplotlib.pyplot as plt
 from astropy.io import fits
 from astropy.wcs import WCS
@@ -15,25 +12,6 @@ from astropy import units as u
 from photutils import detect_sources
 from photutils import Background2D, MedianBackground
 from util_plot import util_plot
-
-
-def find_fits_files(data_dir, file_name=None):
-    """Creates image path in data directory.
-
-        Args:
-            data_dir(str, required):    Directory which contains FITs. images
-
-        Returns:
-            image_path(str):    Path to fits. image
-            file(srt):    file name
-    """
-    cwd = os.getcwd()
-    os.chdir(data_dir)
-    for file in glob.glob("*"+file_name+"*"):
-        print('File name: ' + file)
-    os.chdir(cwd)
-    image_path = os.path.join(data_dir, file)
-    return image_path, file
 
 
 def image_load(image_path):

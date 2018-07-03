@@ -4,9 +4,8 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
 
-def detect_mask_sources(file_name=None,
-                        script_dir=None,
-                        data_dir=None,
+def detect_mask_sources(script_dir=None,
+                        image_path=None,
                         slice_in=None, slice_out=None,
                         sigma=None, iters=None, box_size=None,
                         filter_size=None, plt_grid=None,
@@ -54,9 +53,7 @@ def detect_mask_sources(file_name=None,
     """
 
     # Finds fits file, reads it to import image data, header, WCS
-    script_dir = script_dir
     os.chdir(script_dir)
-    image_path, file = utils.find_fits_files(data_dir, file_name)
     image, header, wcs = utils.image_load(image_path)
 
     # Slices image and corresponding WCS object
@@ -89,9 +86,8 @@ def detect_mask_sources(file_name=None,
 # This is activated iff this module is run, not if it is imported.
 if __name__ == '__main__':
 
-    detect_mask_sources(file_name="ngc6822_r",
-                        script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
-                        data_dir='/Users/amanchokshi/Desktop/Huntsman/Data',
+    detect_mask_sources(script_dir='/Users/amanchokshi/Desktop/Huntsman/Scripts/huntsman_dust',
+                        image_path='/Users/amanchokshi/Desktop/Huntsman/Data/ngc6822_r.fits',
                         slice_in=2000, slice_out=2500,
                         sigma=3.0, iters=10, box_size=20,
                         filter_size=5, plt_grid=False,
