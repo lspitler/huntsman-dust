@@ -26,7 +26,7 @@ def detect_mask_sources(image_path=None,
              grids, a 2D background array is created. Discrete sources are
              identified based on two criteria:
                 (i)  Sources must be a fixed sigma above the background.
-                     By convetions, a source is identified if it is 3.0 sigma
+                     By convention, a source is identified if it is 3.0 sigma
                      above the threshold, but any other value of sigma is also
                      acceptable.
                 (ii) A source must have a minimum number of interconnected
