@@ -32,12 +32,12 @@ def image_load(image_path):
     return image, header, wcs
 
 
-def background_2D(image, sigma=None, iters=None, box_size=None, filter_size=None,
-                  plt_grid=None):
+def background_2D(image, sigma=None, iters=None, box_size=None,
+                  filter_size=None, plt_grid=None):
     """2D background estimation.
 
-    This function creates a 2D background estimate by dividing the image into a grid,
-    defined by box_size.
+    This function creates a 2D background estimate by dividing the image into
+    a grid, defined by box_size.
 
         Args:
             image(array, required):   This is the image data
@@ -51,46 +51,70 @@ def background_2D(image, sigma=None, iters=None, box_size=None, filter_size=None
             bkg(array):    2D background level
             bkgrms(array):    RMS background
     """
-    sigma_clip = SigmaClip(sigma=sigma, iters=iters)
+    sigma_clip = SigmaClip(sigma=sigma,
+                           iters=iters)
     mask = (image == 0)
     bkg_estimator = MedianBackground()
-    bkg = Background2D(image, box_size=box_size, filter_size=filter_size,
-                       sigma_clip=sigma_clip, bkg_estimator=bkg_estimator,
-                       mask=mask, edge_method=u'pad')
+    bkg = Background2D(image,
+                       box_size=box_size,
+                       filter_size=filter_size,
+                       sigma_clip=sigma_clip,
+                       bkg_estimator=bkg_estimator,
+                       mask=mask,
+                       edge_method=u'pad')
     print('Background Median: ' + str(bkg.background_median))
     print('Background RMS median: ' + str(bkg.background_rms_median))
     if plt_grid is True:
-        plt.imshow(bkg.background, origin='lower', cmap='Greys')
-        bkg.plot_meshes(outlines=True, color='#1f77b4')
+        plt.imshow(bkg.background,
+                   origin='lower',
+                   cmap='Greys')
+        bkg.plot_meshes(outlines=True,
+                        color='#1f77b4')
     bkgrms = bkg.background_rms
     return bkg, bkgrms
 
 
-def find_objects(image, threshold, FWHM=None, npixels=None):
+def find_objects(image,
+                 threshold,
+                 FWHM=None,
+                 npixels=None):
     """Find sources in image by a segmentation process.
 
     This function detects sources a given sigma above a threshold,
     only if it has more that npixels that are interconnected.
 
         Args:
-            image(array, required):        This is the image data
-            threshold(array, required):    This is the threshold above which detection occurs
-            FWHM(int, required):           Full Width Half Maximum of 2D circular gaussian
-                                           kernel used to filter the image prior to
-                                           thresholding. Input is in terms of pixels.
-            npixels(int, required):        The minimum number of pixels to define a sources
+            image(array, required):      This is the image data
+            threshold(array, required):  This is the threshold above which
+                                         detection occurs
+            FWHM(int, required):         Full Width Half Maximum of 2D circular
+                                         gaussian kernel used to filter the
+                                         image prior to thresholding. Input is
+                                         in terms of pixels.
+            npixels(int, required):      The minimum number of pixels to define
+                                         a sources
 
         Returns:
             Segm:    The segmentation image
     """
     sigma = FWHM * gaussian_fwhm_to_sigma
-    kernel = Gaussian2DKernel(sigma, x_size=3, y_size=3)
+    kernel = Gaussian2DKernel(sigma,
+                              x_size=3,
+                              y_size=3)
     kernel.normalize()
-    segm = detect_sources(image, threshold, npixels=npixels, filter_kernel=kernel)
+    segm = detect_sources(image,
+                          threshold,
+                          npixels=npixels,
+                          filter_kernel=kernel)
     return segm
 
 
-def mask_galaxy(image, wcs, name=None, Ra=None, Dec=None, radius=None):
+def mask_galaxy(image,
+                wcs,
+                name=None,
+                Ra=None,
+                Dec=None,
+                radius=None):
     """Masks galaxy at Ra, Dec within a radius given in arcminutes
 
     Creates a circular mask centered at a given Ra, Dec. The radius
@@ -135,7 +159,7 @@ def mask_galaxy(image, wcs, name=None, Ra=None, Dec=None, radius=None):
 
     # Finds pixel scale using WSC object. The default units can be found by
     # unit = header['CUNIT1'], they are degrees by convention
-    # degrees are converted to arcmins, after which radius in computed in pixels
+    # degrees are converted to arcmins and radius in computed in pixels
     scale = proj_plane_pixel_scales(wcs)
     pix_scale = scale[0]*u.deg.to(u.arcmin)
     print('Image Scale: ' + str(pix_scale)+' arcmin/pix')
@@ -152,7 +176,12 @@ def mask_galaxy(image, wcs, name=None, Ra=None, Dec=None, radius=None):
     return masked_img, mask
 
 
-def plt_fits(image, wcs, figure=None, title=None, cmap=None, norm=None):
+def plt_fits(image,
+             wcs,
+             figure=None,
+             title=None,
+             cmap=None,
+             norm=None):
     """Plots FITs images with axis given in Ra, Dec.
 
         Args:
