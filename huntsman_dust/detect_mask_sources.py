@@ -120,8 +120,8 @@ if __name__ == '__main__':
 
     detect_mask_sources(image_path='/Users/amanchokshi/Desktop/Huntsman/Data'
                         + '/ngc6822_r.fits',
-                        slice_in=2000,
-                        slice_out=2500,
+                        slice_in=1500,
+                        slice_out=3000,
                         sigma=3.0,
                         iters=10,
                         box_size=20,
