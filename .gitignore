@@ -105,7 +105,3 @@ venv.bak/
 
 #.DS_Store added to gitignore
 .DS_Store
-
-# added obsolete directory to gitignore.
-# All old code which is no longer in use is stored here.
-/obsolete/*
