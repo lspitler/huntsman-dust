@@ -79,7 +79,7 @@ def detect_mask_sources(image_path=None,
 
     utils.plt_fits(segm,
                    wcs,
-                   figure=3,
+                   figure=2,
                    title="Segmented image with sources",
                    cmap=segm.cmap(random_state=12345),
                    norm=None)
