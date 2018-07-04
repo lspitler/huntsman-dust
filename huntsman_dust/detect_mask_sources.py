@@ -13,6 +13,7 @@ def detect_mask_sources(image_path=None,
                         plt_grid=None,
                         FWHM=None,
                         npixels=None,
+                        ds9_region=None,
                         obj_name=None,
                         Ra=None,
                         Dec=None,
@@ -54,6 +55,7 @@ def detect_mask_sources(image_path=None,
                                                  thresholding. Input is in
                                                  terms of pixels.
                      npixels(int, required):     Min pixels to classify source
+                     ds9_region(boolean, opt):   Creates ds9 region file
                      obj_name(str, required):    Galaxy name. Ex: 'NGC6822'
                      Ra(str, optional):          Ra of galaxy in degrees
                      Dec(str, optional):         Dec of galaxy in degrees
@@ -84,7 +86,15 @@ def detect_mask_sources(image_path=None,
                               FWHM=FWHM,
                               npixels=npixels)
 
-    # Mask galaxy at given Ra, Dec, within raduis in arcmins
+    # Creates ds9 region file if ds9_region is True
+    utils.ds9_region(image_path,
+                     image,
+                     segm,
+                     wcs,
+                     ds9_region=ds9_region)
+
+
+# Mask galaxy at given Ra, Dec, within raduis in arcmins
     masked_img, mask = utils.mask_galaxy(image,
                                          wcs,
                                          name=obj_name,
@@ -129,6 +139,7 @@ if __name__ == '__main__':
                         plt_grid=False,
                         FWHM=2.0,
                         npixels=6,
+                        ds9_region=False,
                         obj_name='NGC6822',
                         Ra=296.234,
                         Dec=-14.797,
