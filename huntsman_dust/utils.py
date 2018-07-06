@@ -13,7 +13,7 @@ from astropy import units as u
 from photutils import source_properties
 from photutils import detect_sources
 from photutils import Background2D, MedianBackground
-from util_plot import util_plot
+import huntsman_dust.util_plot as util_plot
 
 
 def image_load(image_path):
@@ -233,7 +233,7 @@ def plt_fits(image,
             norm:                     Image normalizatuion
 
     """
-    util_plot()
+    util_plot.util_plot()
     fig = plt.figure(num=figure)
     ax = fig.add_subplot(1, 1, 1, projection=wcs)
     ax.imshow(image, origin='lower', cmap=cmap, norm=norm)

@@ -1,4 +1,4 @@
-import utils
+import huntsman_dust.utils as utils
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
@@ -124,6 +124,8 @@ def detect_mask_sources(image_path,
                    cmap=segm.cmap(random_state=12345),
                    norm=None)
 
+    plt.show()
+
 
 # This is activated iff this module is run, not if it is imported.
 if __name__ == '__main__':
@@ -136,5 +138,3 @@ if __name__ == '__main__':
                         Ra=296.234,
                         Dec=-14.797,
                         obj_radius=10)
-
-    plt.show()
