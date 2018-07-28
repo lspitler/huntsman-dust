@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1323168.svg)](https://doi.org/10.5281/zenodo.1323168)
+[![DOI](https://zenodo.org/badge/137179258.svg)](https://zenodo.org/badge/latestdoi/137179258)
 
 # Huntsman Dust
 
