@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1323168.svg)](https://doi.org/10.5281/zenodo.1323168)
+
 # Huntsman Dust
 
 This project is being created to study Galactic cirrus. Galactic cirrus are
