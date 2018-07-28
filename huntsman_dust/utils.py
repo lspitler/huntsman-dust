@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from scipy import fftpack
 import matplotlib.pyplot as plt
 from astropy.io import fits
 from astropy.wcs import WCS
@@ -34,8 +35,12 @@ def image_load(image_path):
     return image, header, wcs
 
 
-def background_2D(image, sigma=None, iters=None, box_size=None,
-                  filter_size=None, plt_grid=None):
+def background_2D(image,
+                  sigma,
+                  iters,
+                  box_size,
+                  filter_size,
+                  plt_grid):
     """2D background estimation.
 
     This function creates a 2D background estimate by dividing the image into
@@ -64,8 +69,8 @@ def background_2D(image, sigma=None, iters=None, box_size=None,
                        bkg_estimator=bkg_estimator,
                        mask=mask,
                        edge_method=u'pad')
-    print('Background Median: ' + str(bkg.background_median))
-    print('Background RMS median: ' + str(bkg.background_rms_median))
+    # print('Background Median: ' + str(bkg.background_median))
+    # print('Background RMS median: ' + str(bkg.background_rms_median))
     if plt_grid is True:
         plt.imshow(bkg.background,
                    origin='lower',
@@ -78,8 +83,8 @@ def background_2D(image, sigma=None, iters=None, box_size=None,
 
 def find_objects(image,
                  threshold,
-                 FWHM=None,
-                 npixels=None):
+                 FWHM,
+                 npixels):
     """Find sources in image by a segmentation process.
 
     This function detects sources a given sigma above a threshold,
@@ -115,7 +120,7 @@ def ds9_region(image_path,
                image,
                segm,
                wcs,
-               ds9_region=None):
+               ds9_region):
     """"Creates ds9 region file.
 
     This function creates a ds9 region file to display the sources
@@ -151,10 +156,10 @@ def ds9_region(image_path,
 
 def mask_galaxy(image,
                 wcs,
-                name=None,
-                Ra=None,
-                Dec=None,
-                radius=None):
+                Ra,
+                Dec,
+                name,
+                radius):
     """Masks galaxy at Ra, Dec within a radius given in arcminutes
 
     Creates a circular mask centered at a given Ra, Dec. The radius
@@ -189,6 +194,8 @@ def mask_galaxy(image,
         center = SkyCoord.from_name(name)
     except Exception:
         print("No active internet connection. Manually enter Ra, Dec.")
+        Ra = Ra
+        Dec = Dec
         center = SkyCoord(Ra, Dec, unit="deg")
 
     c_pix = skycoord_to_pixel(center, wcs)
@@ -210,18 +217,15 @@ def mask_galaxy(image,
     Y, X = np.ogrid[:y, :x]
     dist_from_center = np.sqrt((X - a)**2 + (Y - b)**2)
     mask = dist_from_center <= rad_pix
-    masked_img = image.copy()
-    masked_img[(mask > 0)] = 0
-
-    return masked_img, mask
+    return mask
 
 
 def plt_fits(image,
              wcs,
-             figure=None,
-             title=None,
-             cmap=None,
-             norm=None):
+             figure,
+             title,
+             cmap,
+             norm):
     """Plots FITs images with axis given in Ra, Dec.
 
         Args:
@@ -240,3 +244,100 @@ def plt_fits(image,
     ax.coords[0].set_axislabel('RA')
     ax.coords[1].set_axislabel('DEC')
     ax.set_title(title)
+
+
+def plt_image(image,
+              figure,
+              title,
+              xlabel,
+              ylabel,
+              cmap,
+              norm):
+    """Plots FITs images with axis given in Ra, Dec.
+
+        Args:
+            image(array):             Image data
+            wcs:                      World Coordinte System object
+            figure(optional):         Figure Number
+            title(str, optional):     Title of the figure
+            cmap(str, optiona):       Color map
+            norm:                     Image normalizatuion
+
+    """
+    util_plot.util_plot()
+    plt.figure(num=figure)
+    plt.imshow(image, origin='lower', cmap=cmap, norm=norm)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+
+
+def fits_write(image, header, img_path, name=None):
+    """Writes an 2D data array to a fits file.
+
+    Writes a 2D array to a fits file in the same directory as the oringinal
+    image. It appends the image header to this new fits file.
+
+    Args:
+        image(array):          The image data to be written to a fits file
+        header(hdu.header):    The header information to be appended
+        img_path(str):         Path to source file
+        name(str):             Name of new fits file. Ex: mask.fits
+    """
+
+    hdu = fits.PrimaryHDU()
+    hdu.data = image.astype(float)
+    hdu.header = header
+
+    data_path, file = os.path.split(img_path)
+    file_path = os.path.join(data_path, name + "."+'fits')
+    hdu.writeto(file_path, overwrite=True)
+
+
+def azimuthalAverage(image, center=None):
+    """
+    Calculate the azimuthally averaged radial profile.
+
+    image - The 2D image
+    center - The [x,y] pixel coordinates used as the center. The default is
+             None, which then uses the center of the image (including
+             fracitonal pixels).
+
+    Contributed by Jessica R. Lu
+    """
+    # Calculate the indices from the image
+    y, x = np.indices(image.shape)
+
+    if not center:
+        center = np.array([(y.max()-y.min())/2.0, (x.max()-x.min())/2.0])
+
+    r = np.hypot(x - center[1], y - center[0])
+
+    # Get sorted radii
+    ind = np.argsort(r.flat)
+    r_sorted = r.flat[ind]
+    i_sorted = image.flat[ind]
+
+    # Get the integer part of the radii (bin size = 1)
+    r_int = r_sorted.astype(int)
+
+    # Find all pixels that fall within each radial bin.
+    deltar = r_int[1:] - r_int[:-1]  # Assumes all radii represented
+    rind = np.where(deltar)[0]       # location of changed radius
+    nr = rind[1:] - rind[:-1]        # number of radius bin
+
+    # Cumulative sum to figure out sums for each radius bin
+    csim = np.cumsum(i_sorted, dtype=float)
+    tbin = csim[rind[1:]] - csim[rind[:-1]]
+
+    radial_prof = tbin / nr
+
+    return radial_prof
+
+
+def p_spec(image):
+    """Performs 2D FFT on image and averages radially."""
+    image = image.astype(float)
+    psd2D = np.abs(fftpack.fftshift(fftpack.fft2(image)))**2
+    psd1D = azimuthalAverage(psd2D)
+    return psd1D

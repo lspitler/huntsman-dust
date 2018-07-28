@@ -37,7 +37,7 @@ def util_plot(fig_width=None, fig_height=None, columns=1):
 
 # Modified from http://joseph-long.com/writing/colorbars/
 params = {
-    'text.latex.preamble': ['\\usepackage{gensymb}'],
+    # 'text.latex.preamble': ['\\usepackage{gensymb}'],
     'image.origin': 'lower',
     'image.interpolation': 'nearest',
     'image.cmap': 'gray',
@@ -46,7 +46,7 @@ params = {
     'axes.labelsize': 10,  # fontsize for x and y labels (was 10)
     'axes.titlesize': 14,
     'font.size': 10,  # was 10
-    'legend.fontsize': 6,  # was 10
+    'legend.fontsize': 10,  # was 10
     'xtick.labelsize': 8,
     'ytick.labelsize': 8,
     'text.usetex': True,
